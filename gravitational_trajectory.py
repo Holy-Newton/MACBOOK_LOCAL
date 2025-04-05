@@ -52,7 +52,7 @@ class Star:
         self.velocity += a_tot * dt
         self.position += self.velocity * dt
         print(self.position)
-        
+
 
 def main():
     run = True
@@ -90,7 +90,17 @@ def main():
         trace_val=False
     )
 
-    star_system = [star_1, star_2, star_3]
+    star_4 = Star(
+        name="Sirius2",
+        mass=1.989e26,  # kg
+        radius= 7,
+        color=RED,  # RGB color for Earth
+        position=np.array([1e8, -2.5e8],dtype=np.float64),  # Earth's average distance from the sun in meters
+        velocity=np.array([31000, 15000],dtype=np.float64),  # Earth's orbital velocity in m/s
+        trace_val=False
+    )
+
+    star_system = [star_1, star_2, star_3, star_4]
 
 #-----------------### LOOP ###------------------
 
