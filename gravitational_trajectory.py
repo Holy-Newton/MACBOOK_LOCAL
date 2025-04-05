@@ -9,7 +9,7 @@ pygame.display.set_caption("Gravitational Trajectory Simulation by Holly Newton"
 
 
 #constants
-dt = 3600
+epsilon = 2e6  ### epsilon is the "softening" to avoid singularities. (logical)#
 G = 6.67430e-9
 # Commonly used colors in programming
 BLACK = (0, 0, 0)       # Noir
@@ -40,7 +40,7 @@ class Star:
 
     def acceleration(self, other):
         r = np.linalg.norm(other.position - self.position)
-        a = G * other.mass * (other.position - self.position) / r**3
+        a = G * other.mass * (other.position - self.position) / ((r)**2 + epsilon**2)**(3/2)
         return a
     
     def new_position(self, dt, star_system):
@@ -57,7 +57,7 @@ class Star:
 def main():
     run = True
     clock = pygame.time.Clock()
-    dt = 1
+    dt = 0.7
     
     #----------------###  STARS   ###------------------
 
@@ -65,38 +65,38 @@ def main():
         name="Sun",
         mass=1.989e28,  # kg
         radius= 8,
-        color=WHITE,  # RGB color for the sun
-        position=np.array([-1.496e8, 0], dtype=np.float64),  # Sun is at the center of the solar system
-        velocity=np.array([0, -297800], dtype=np.float64),  # Sun is stationary in this simulation
+        color=WHITE,  
+        position=np.array([-1.496e8, 0], dtype=np.float64), 
+        velocity=np.array([0, -297800], dtype=np.float64),  
         trace_val=False
     )
     star_2 = Star(
         name="Sirius",
         mass=1.989e28,  # kg
         radius= 8,
-        color=WHITE,  # RGB color for Earth
-        position=np.array([1.496e8, 0],dtype=np.float64),  # Earth's average distance from the sun in meters
-        velocity=np.array([0, 297800],dtype=np.float64),  # Earth's orbital velocity in m/s
+        color=WHITE,  
+        position=np.array([1.496e8, 0],dtype=np.float64),  
+        velocity=np.array([0, 297800],dtype=np.float64),  
         trace_val=False
     )
 
     star_3 = Star(
         name="Sirius2",
-        mass=1.989e26,  # kg
+        mass=1.989e26,  
         radius= 7,
-        color=BLUE,  # RGB color for Earth
-        position=np.array([-1e8, 2.5e8],dtype=np.float64),  # Earth's average distance from the sun in meters
-        velocity=np.array([-31000, -15000],dtype=np.float64),  # Earth's orbital velocity in m/s
+        color=BLUE,  
+        position=np.array([-1e8, 2.5e8],dtype=np.float64),  
+        velocity=np.array([-47000, -1000],dtype=np.float64),  
         trace_val=False
     )
 
     star_4 = Star(
         name="Sirius2",
-        mass=1.989e26,  # kg
+        mass=1.989e26,  
         radius= 7,
-        color=RED,  # RGB color for Earth
-        position=np.array([1e8, -2.5e8],dtype=np.float64),  # Earth's average distance from the sun in meters
-        velocity=np.array([31000, 15000],dtype=np.float64),  # Earth's orbital velocity in m/s
+        color=RED,  
+        position=np.array([1e8, -2.5e8],dtype=np.float64),  
+        velocity=np.array([47000, 1000],dtype=np.float64),  
         trace_val=False
     )
 
@@ -105,7 +105,7 @@ def main():
 #-----------------### LOOP ###------------------
 
     while run:
-        clock.tick(1200) 
+        clock.tick(800) 
         win.fill(BLACK) 
 
         for event in pygame.event.get():
