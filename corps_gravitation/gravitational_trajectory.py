@@ -55,8 +55,6 @@ class Star:
 
 
 ### _______________MAIN()________________________
-
-
 def main(win):
     quit_menu = False
     menu(win, WIDTH, HEIGHT)

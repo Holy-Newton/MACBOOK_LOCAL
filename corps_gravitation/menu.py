@@ -2,10 +2,6 @@ import numpy as np
 import math as m
 import pygame
 
-# CONSTANT
-
-teta = 0.1
-fact = 1
 # Commonly used colors in programming
 BLACK = (0, 0, 0)       # Noir
 WHITE = (255, 255, 255) # Blanc
@@ -24,7 +20,7 @@ def draw_text(win, text, font_size, position, color):
     text_rect = text_surface.get_rect(center=position)
     win.blit(text_surface, text_rect)
 
-def chargement(x , y, teta, fact):
+def chargement(win,x , y, teta, fact):
     n = int(teta/(2*m.pi) * 255)
     a,b = x,y
     radius = 14
@@ -38,17 +34,23 @@ def chargement(x , y, teta, fact):
         y += radius * np.sin(2*m.pi-teta)
         x1 = a+(-radius) * np.cos(-teta)
         y1 = b+(-radius) * np.sin(-teta)
-    pygame.draw.circle(win, (255-n/2, 255-n, 255), (x,y), 10)
-    pygame.draw.circle(win, (n/1.3, 40, 90), (x1,y1), 10)
-    
+    pygame.draw.circle(win, rgb(n), (x,y), 10)
+    pygame.draw.circle(win, rgb(n), (x1,y1), 10)
+
+def rgb(n):
+    t = 2 * np.pi * n / 255
+    r = int((np.sin(t) * 127) + 128)
+    g = int((np.sin(t + 2*np.pi/3) * 127) + 128)
+    b = int((np.sin(t + 4*np.pi/3) * 127) + 128)
+    return (r, g, b)    
 
 def menu(win, WIDTH, HEIGHT):
-    global quit_menu
+    
     clock = pygame.time.Clock()
     run = True
     WB, HB = 500,100
-    global teta
-    global fact
+    teta = 0.1
+    fact = 1
     while run:
         
         ### CHARGEMENT
@@ -87,6 +89,7 @@ def menu(win, WIDTH, HEIGHT):
             WB, HB = 515,115
             draw_text(win, "Start Simulation", 39, (250, HEIGHT-100), TRON)        
             if click[0]:
+                draw_text(win, "Start Simulation", 20, (250, HEIGHT-100), TRON)
                 draw_text(win, "Start Simulation", 29, (250, HEIGHT-100), TRON)
                 WB, HB = 485,85
         else:
@@ -104,7 +107,7 @@ def menu(win, WIDTH, HEIGHT):
                 run = False
                 quit_menu = True
         
-        chargement(480, HEIGHT-97 , teta, fact)
+        chargement(win, 489, HEIGHT-97 , teta, fact)
 
         
         pygame.display.update()
