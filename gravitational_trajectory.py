@@ -54,7 +54,6 @@ class Star:
             a_tot += self.acceleration(other)
         self.velocity += a_tot * dt
         self.position += self.velocity * dt
-        print(self.position)
 
 
 ### _______________MENU()________________________
@@ -67,7 +66,6 @@ def draw_text(win, text, font_size, position, color):
     win.blit(text_surface, text_rect)
 
 def chargement(x , y, teta, fact):
-    
     n = int(teta/(2*m.pi) * 255)
     a,b = x,y
     radius = 14
@@ -81,7 +79,6 @@ def chargement(x , y, teta, fact):
         y += radius * np.sin(2*m.pi-teta)
         x1 = a+(-radius) * np.cos(-teta)
         y1 = b+(-radius) * np.sin(-teta)
-    print(n)
     pygame.draw.circle(win, (255-n/2, 255-n, 255), (x,y), 10)
     pygame.draw.circle(win, (n/1.3, 40, 90), (x1,y1), 10)
     
@@ -94,7 +91,7 @@ def menu():
     global teta
     global fact
     while run:
-
+        
         ### CHARGEMENT
         if teta >= 2*m.pi or teta <= 0:
             fact = -fact
@@ -125,12 +122,13 @@ def menu():
         start_but2 = pygame.Rect(550/2-WB/2+4, HEIGHT-150+4-HB/2+50, WB-8, HB-8)
         pygame.draw.rect(win, TRON, start_but, border_radius=10)
         pygame.draw.rect(win, BLACK, start_but2, border_radius=10)
+        draw_text(win, "Start Simulation", 35, (250, HEIGHT-100), TRON)
 
         if start_but.collidepoint(mouse_pos):
             WB, HB = 515,115
-            draw_text(win, "Start Simulation", 38, (250, HEIGHT-100), TRON)
+            draw_text(win, "Start Simulation", 39, (250, HEIGHT-100), TRON)        
             if click[0]:
-                draw_text(win, "Start Simulation", 32, (250, HEIGHT-100), TRON)
+                draw_text(win, "Start Simulation", 29, (250, HEIGHT-100), TRON)
                 WB, HB = 485,85
         else:
             draw_text(win, "Start Simulation", 35, (250, HEIGHT-100), TRON)
