@@ -5,7 +5,7 @@ from menu import menu
 pygame.init()
 WIDTH, HEIGHT = 1200, 900
 win = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Gravitational Trajectory Simulation by Holly Newton")
+pygame.display.set_caption("Gravitational Trajectory Simulation by Holy-Newton")
 
 
 # CONSTANT

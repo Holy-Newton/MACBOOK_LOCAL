@@ -2,7 +2,7 @@ import numpy as np
 import math as m
 import pygame
 
-# Commonly used colors in programming
+# Standard RGB color definitions
 BLACK = (0, 0, 0)       # Noir
 WHITE = (255, 255, 255) # Blanc
 RED = (255, 0, 0)       # Rouge
@@ -11,6 +11,31 @@ BLUE = (150, 150, 255)      # Bleu
 YELLOW = (255, 255, 0)  # Jaune
 CYAN = (0, 255, 255)    # Cyan
 TRON = (167, 208, 255)
+
+
+def crant_bar( win, mouse_pos, click, x, y, choices, default,length, width, color):  ## Selection bar
+    if not hasattr(crant_bar, "val"):
+        crant_bar.val = default*length/(choices)
+    init = pygame.Rect(x, y, length, width)
+    pygame.draw.rect(win, color, init, border_radius=2)
+
+    init_black = pygame.Rect(x+crant_bar.val+4, y+4, length-crant_bar.val-8, width-8)
+    pygame.draw.rect(win, BLACK, init_black, border_radius=4)
+
+    if init.collidepoint(mouse_pos):
+        if click[0]==1:
+            for i in range(choices):
+                if mouse_pos[0]> x+i*(length/choices) and mouse_pos[0]< x+(i+1)*(length/choices):
+                    crant_bar.val = (i+1)*(length/choices)
+    return int(crant_bar.val/length*choices)
+
+
+
+
+
+
+
+
 
 
 def draw_text(win, text, font_size, position, color):
@@ -52,7 +77,10 @@ def menu(win, WIDTH, HEIGHT):
     teta = 0.1
     fact = 1
     while run:
-        
+        mouse_pos = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+
+
         ### CHARGEMENT
         if teta >= 2*m.pi or teta <= 0:
             fact = -fact
@@ -70,12 +98,8 @@ def menu(win, WIDTH, HEIGHT):
         font = pygame.font.SysFont('courier new', 29)
         font.set_underline(True)
         font.set_bold(True)
-        text = font.render("==Gravitational Trajectory Simulation====@Holy_Newton==", 1, TRON)
+        text = font.render("==Gravitational Trajectory Simulation====@Holy-Newton==", 1, TRON)
         win.blit(text, (WIDTH/2 - text.get_width()/2, 130 - text.get_height()/1))
-
-
-        mouse_pos = pygame.mouse.get_pos()
-        click = pygame.mouse.get_pressed()
 
         # START BUTTON
         
@@ -99,15 +123,18 @@ def menu(win, WIDTH, HEIGHT):
 
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONUP:
-                if event.button == 1:  # Left mouse button
+                if event.button == 1:  #gauche
                     if start_but.collidepoint(mouse_pos):
                         run = False
 
             if event.type == pygame.QUIT:
                 run = False
-                quit_menu = True
+                
         
         chargement(win, 489, HEIGHT-97 , teta, fact)
+
+        print(crant_bar(win, mouse_pos, click, WIDTH- 250, 250, 3,1, 200, 20, WHITE))
+
 
         
         pygame.display.update()
