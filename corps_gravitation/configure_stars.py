@@ -12,6 +12,8 @@ YELLOW = (255, 255, 0)  # Jaune
 CYAN = (0, 255, 255)    # Cyan
 TRON = (167, 208, 255)
 
+
+
 init_data = [
     {"position":np.array([-1.496e8, 0], dtype=np.float64), "velocity":np.array([0, -297800], dtype=np.float64), "mass":1.989e28, "color":WHITE},
     {"position":np.array([1.496e8, 0], dtype=np.float64), "velocity":np.array([0, 297800], dtype=np.float64), "mass":1.989e28, "color":WHITE},
@@ -21,8 +23,7 @@ init_data = [
 ]
 
 
-
-def crant_bar( win, mouse_pos, click, x, y, choices, default,length, width, color, key):  ## Selection bar
+def crant_bar( win, mouse_pos, click, x, y, choices, default,length, width, color, color2, key):  ## Selection bar
     if not hasattr(crant_bar, "val"):
         crant_bar.val = {}
 
@@ -33,6 +34,8 @@ def crant_bar( win, mouse_pos, click, x, y, choices, default,length, width, colo
         default = crant_bar.val[key] * choices/length
         print(2)
 
+    init_bg = pygame.Rect(x-2, y-2, length+4, width+4)
+    pygame.draw.rect(win, color2, init_bg, border_radius=2)
 
     init = pygame.Rect(x, y, length, width)
     pygame.draw.rect(win, color, init, border_radius=2)
@@ -49,10 +52,14 @@ def crant_bar( win, mouse_pos, click, x, y, choices, default,length, width, colo
     return crant_bar.val[key]/length*choices
 
 
-
 def draw_text(win, text, font_size, position, color):
     font = pygame.font.SysFont('courier new', font_size)
     font.set_bold(True)
+    text_surface = font.render(text, True, color)
+    text_rect = text_surface.get_rect(center=position)
+    win.blit(text_surface, text_rect)
+
+def light_draw_text(win, text, position, color, font):
     text_surface = font.render(text, True, color)
     text_rect = text_surface.get_rect(center=position)
     win.blit(text_surface, text_rect)
@@ -64,23 +71,28 @@ class Star:
         self.velocity = velocity
         self.mass = mass
         self.color = color
-
 stars = []
 previous = 0
+
+
 ### creation of the menu parameters
 def configure_stars(win, mouse_pos, click, WIDTH, HEIGHT):
+    Font = pygame.font.SysFont('courier new', 16)
+
+    Lenght_bar = 200
+    OFFSET = Lenght_bar/2
+    POSITION = 1e9
+    Pos_scale = POSITION / OFFSET
+    Vel_scale = 1e6 / OFFSET
+    Mass_scale = 1e27
     
 
-    stars_number = int( crant_bar(win, mouse_pos, click, WIDTH- 250, 250, 3,1, 200, 20, WHITE, key = f"star_number") + 1)
+    draw_text(win, "Stars number :", 20, (WIDTH- Lenght_bar/2 - 50, 230), RED)
+    stars_number = int( crant_bar(win, mouse_pos, click, WIDTH- Lenght_bar - 50, 250, 3,1, Lenght_bar, 20, WHITE, RED, key = f"star_number") + 1)
+    par_size = HEIGHT/(stars_number+3)
 
     global previous
     global stars
-
-    par_size = HEIGHT/(stars_number+3)
-    Pos_scale = 1e9 / 100
-    OFFSET = 100
-
-    
 
     if previous != stars_number:
         stars = []
@@ -92,24 +104,34 @@ def configure_stars(win, mouse_pos, click, WIDTH, HEIGHT):
                 color=data["color"]
             )
             stars.append(star)
-            '''
-            index = len(stars) - 1
-            key_x = f"star{index}_x"
-            key_y = f"star{index}_y"
-            stars.append(star)
-            if key_x not in crant_bar.val:
-                crant_bar.val[key_x] = star.position[0]
-            if key_y not in crant_bar.val:
-                crant_bar.val[key_y] = star.position[1]
-            '''
+            
 
 
-    for star in stars:
-        i = stars.index(star)
-        x = crant_bar(win, mouse_pos, click, WIDTH-250, par_size*(i+1)+160, 200, stars[i].position[0]/Pos_scale+OFFSET, 200, 12, WHITE,key = f"star{i}_x")
-        y = crant_bar(win, mouse_pos, click, WIDTH-250, par_size*(i+1)+20+160, 200, stars[i].position[1]/Pos_scale+OFFSET, 200, 12, WHITE,key = f"star{i}_y")
-        #print(x,y)
+    for i, star in enumerate(stars):
+        draw_text(win, f"Star {i+1}", 20, (WIDTH-250+Lenght_bar/2, par_size*(i+1)+160), WHITE)
+
+        x = crant_bar(win, mouse_pos, click, WIDTH-250, par_size*(i+1)+180, 200, stars[i].position[0]/Pos_scale+OFFSET, Lenght_bar, 12, WHITE, TRON, key = f"star{i}_x")
+        formatted_x = f"x: {Pos_scale*(x-OFFSET)/1000:.3e}"
+        light_draw_text(win, formatted_x+" km", (WIDTH-380, par_size*(i+1) + 188), WHITE, Font)
+        
+        y = crant_bar(win, mouse_pos, click, WIDTH-250, par_size*(i+1)+20+180, 200, stars[i].position[1]/Pos_scale+OFFSET, Lenght_bar, 12, WHITE,TRON, key = f"star{i}_y")
+        formatted_y = f"y: {Pos_scale*(y-OFFSET)/1000:.3e}"
+        light_draw_text(win, formatted_y+" km", (WIDTH-380, par_size*(i+1) + 20+ 188), WHITE, Font)
+        
+        Vx = crant_bar(win, mouse_pos, click, WIDTH-250, par_size*(i+1)+40+180, 200, stars[i].velocity[0]/Vel_scale+OFFSET, Lenght_bar, 12, WHITE, TRON, key = f"star{i}_Vx")
+        formatted_Vx = f"Vx: {Vel_scale*(Vx-OFFSET)/1000:.3e}"
+        light_draw_text(win, formatted_Vx + " km/s", (WIDTH-380, par_size*(i+1) + 40+ 188), WHITE, Font)
+
+        Vy = crant_bar(win, mouse_pos, click, WIDTH-250, par_size*(i+1)+60+180, 200, stars[i].velocity[1]/Vel_scale+OFFSET, Lenght_bar, 12, WHITE,TRON, key = f"star{i}_Vy")
+        formatted_Vy = f"Vx: {Vel_scale*(Vy-OFFSET)/1000:.3e}"
+        light_draw_text(win, formatted_Vy + " km/s", (WIDTH-380, par_size*(i+1)+ 60 + 188), WHITE, Font)
+        
+        mass = crant_bar(win, mouse_pos, click, WIDTH-250, par_size*(i+1)+80+180, 200, stars[i].mass/Mass_scale, Lenght_bar, 12, WHITE, TRON, key = f"star{i}_mass")
+        formatted_mass = f"Mass: {mass*Mass_scale/1e30:.3e}"
+        light_draw_text(win, formatted_mass + " kg", (WIDTH-380, par_size*(i+1)+80+188), WHITE, Font)
+
         stars[i].position = np.array([Pos_scale*(x-OFFSET), Pos_scale*(y-OFFSET)], dtype=np.float64)
-        print(stars[i].position[0])
+        stars[i].velocity = np.array([Vel_scale*(Vx-OFFSET), Vel_scale*(Vy-OFFSET)], dtype=np.float64)
+        stars[i].mass = mass*Mass_scale
     
     previous = stars_number
