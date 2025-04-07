@@ -20,21 +20,46 @@ init_data = [
 
 ]
 
-def crant_bar( win, mouse_pos, click, x, y, choices, default,length, width, color):  ## Selection bar
+
+
+
+
+
+
+'''
+
+
+def crant_bar( win, mouse_pos, click, x, y, choices, default,length, width, color, key):  ## Selection bar
     if not hasattr(crant_bar, "val"):
-        crant_bar.val = default*length/(choices)
+        crant_bar.val = {}
+
+    if key not in crant_bar.val:
+        crant_bar.val[key] = default*length/choices
+        print(1)
+    else:
+        default = crant_bar.val[key] * choices / length
+        print(2)
     init = pygame.Rect(x, y, length, width)
     pygame.draw.rect(win, color, init, border_radius=2)
 
-    init_black = pygame.Rect(x+crant_bar.val+3, y+3, length-crant_bar.val-6, width-6)
+    init_black = pygame.Rect(x+crant_bar.val[key]+3, y+3, length-crant_bar.val[key]-6, width-6)
     pygame.draw.rect(win, BLACK, init_black, border_radius=4)
 
     if init.collidepoint(mouse_pos):
         if click[0]==1:
             for i in range(choices):
-                if mouse_pos[0]> x+i*(length/choices) and mouse_pos[0]< x+(i+1)*(length/choices):
-                    crant_bar.val = (i+1)*(length/choices)
-    return int(crant_bar.val/length*choices)
+                if x+(i+1)*(length/choices)> mouse_pos[0] > x+i*(length/choices):
+                    crant_bar.val[key] = (i+1)*(length/choices)
+    return int(crant_bar.val[key]/length*choices)
+
+
+
+
+
+
+
+
+
 
 def draw_text(win, text, font_size, position, color):
     font = pygame.font.SysFont('courier new', font_size)
@@ -43,6 +68,10 @@ def draw_text(win, text, font_size, position, color):
     text_rect = text_surface.get_rect(center=position)
     win.blit(text_surface, text_rect)
 
+
+
+
+
 class Star:
     def __init__(self, position, velocity, mass, color):
         self.position = position
@@ -50,20 +79,25 @@ class Star:
         self.mass = mass
         self.color = color
 
-    def draw(self, win, WIDTH, HEIGHT):
-        x = self.position[0] * 1e-6 + WIDTH / 2
-        y = self.position[1] * 1e-6 + HEIGHT / 2
-        pygame.draw.circle(win, self.color, (x,y), 8)
+    
 
 stars = []
 previous = 0
+
+
+
+
 ### creation of the menu parameters
 def configure_stars(win, mouse_pos, click, stars_number, WIDTH, HEIGHT):
     global previous
     global stars
+
     par_size = HEIGHT/(stars_number+3)
+    Pos_scale = 1e9 / 100
+    OFFSET = 100
 
     if previous != stars_number:
+        stars = []
         for data in init_data[:stars_number+1]:
             star = Star(
                 position=data["position"],
@@ -71,16 +105,24 @@ def configure_stars(win, mouse_pos, click, stars_number, WIDTH, HEIGHT):
                 mass=data["mass"],
                 color=data["color"]
             )
+            index = len(stars) - 1
+            key_x = f"star{index}_x"
+            key_y = f"star{index}_y"
             stars.append(star)
-        print(stars[0].position) 
+            if key_x not in crant_bar.val:
+                crant_bar.val[key_x] = star.position[0]
+            if key_y not in crant_bar.val:
+                crant_bar.val[key_y] = star.position[1]
+        
 
 
     for i in range(stars_number+1):
-        x = crant_bar(win, mouse_pos, click, WIDTH-250, par_size*(i+1)+160, 200, (100/1e9)*stars[i].position[0]+100, 200, 12, WHITE)
-        y = crant_bar(win, mouse_pos, click, WIDTH-250, par_size*(i+1)+20+160, 200, (100/1e9)*stars[i].position[1]+100, 200, 12, WHITE)
-        print(x,y)
-        print(stars[i].position[0])
-        stars[i].position = np.array([1e9/100*(x-100), 1e9/100*(y-100)], dtype=np.float64)
         
+        x = crant_bar(win, mouse_pos, click, WIDTH-250, par_size*(i+1)+160, 200, stars[i].position[0]/Pos_scale+OFFSET, 200, 12, WHITE,key = f"star{i}_x")
+        y = crant_bar(win, mouse_pos, click, WIDTH-250, par_size*(i+1)+20+160, 200, stars[i].position[1]/Pos_scale+OFFSET, 200, 12, WHITE,key = f"star{i}_y")
+        #print(x,y)
+        stars[i].position = np.array([Pos_scale*(x-OFFSET), Pos_scale*(y-OFFSET)], dtype=np.float64)
+        print(stars[i].position[0])
     
     previous = stars_number
+'''

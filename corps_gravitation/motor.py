@@ -98,7 +98,7 @@ def main(win):
         name="Sirius2",
         mass=1.989e26,  
         radius= 7,
-        color=RED,  
+        color=RED,     
         position=np.array([1e8, -2.5e8],dtype=np.float64),  
         velocity=np.array([47000, 1000],dtype=np.float64),  
         trace_val=False
