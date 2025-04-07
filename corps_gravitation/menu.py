@@ -77,21 +77,21 @@ def menu(win, WIDTH, HEIGHT):
 
         # START BUTTON
         
-        start_but = pygame.Rect(550/2-WB/2, HEIGHT-150-HB/2+50,WB, HB)
-        start_but2 = pygame.Rect(550/2-WB/2+4, HEIGHT-150+4-HB/2+50, WB-8, HB-8)
+        start_but = pygame.Rect(28+550/2-WB/2, HEIGHT-150-HB/2+50,WB, HB)
+        start_but2 = pygame.Rect(28+550/2-WB/2+4, HEIGHT-150+4-HB/2+50, WB-8, HB-8)
         pygame.draw.rect(win, TRON, start_but, border_radius=10)
         pygame.draw.rect(win, BLACK, start_but2, border_radius=10)
-        draw_text(win, "Start Simulation", 35, (250, HEIGHT-100), TRON)
+        draw_text(win, "Start Simulation", 35, (262, HEIGHT-100), TRON)
 
         if start_but.collidepoint(mouse_pos):
             WB, HB = 515,115
-            draw_text(win, "Start Simulation", 39, (250, HEIGHT-100), TRON)        
+            draw_text(win, "Start Simulation", 39, (262, HEIGHT-100), TRON)        
             if click[0]:
-                draw_text(win, "Start Simulation", 20, (250, HEIGHT-100), WHITE)
-                draw_text(win, "Start Simulation", 29, (250, HEIGHT-100), TRON)
+                draw_text(win, "Start Simulation", 20, (262, HEIGHT-100), WHITE)
+                draw_text(win, "Start Simulation", 29, (262, HEIGHT-100), TRON)
                 WB, HB = 485,85
         else:
-            draw_text(win, "Start Simulation", 35, (250, HEIGHT-100), TRON)
+            draw_text(win, "Start Simulation", 35, (262, HEIGHT-100), TRON)
             WB, HB = 500,100
         
 

@@ -79,7 +79,7 @@ previous = 0
 def configure_stars(win, mouse_pos, click, WIDTH, HEIGHT):
     Font = pygame.font.SysFont('courier new', 16)
 
-    Lenght_bar = 200
+    Lenght_bar = 300
     OFFSET = Lenght_bar/2
     POSITION = 1e9
     Pos_scale = POSITION / OFFSET
@@ -87,8 +87,9 @@ def configure_stars(win, mouse_pos, click, WIDTH, HEIGHT):
     Mass_scale = 1e27
     
 
-    draw_text(win, "Stars number :", 20, (WIDTH- Lenght_bar/2 - 50, 230), RED)
+    
     stars_number = int( crant_bar(win, mouse_pos, click, WIDTH- Lenght_bar - 50, 250, 3,1, Lenght_bar, 20, WHITE, RED, key = f"star_number") + 1)
+    draw_text(win, f"Stars number : {stars_number}", 20, (WIDTH- Lenght_bar/2 - 50, 230), RED)
     par_size = HEIGHT/(stars_number+3)
 
     global previous
@@ -105,33 +106,62 @@ def configure_stars(win, mouse_pos, click, WIDTH, HEIGHT):
             )
             stars.append(star)
             
-
+    ### ----------  PARAMETERS  ---------------
 
     for i, star in enumerate(stars):
-        draw_text(win, f"Star {i+1}", 20, (WIDTH-250+Lenght_bar/2, par_size*(i+1)+160), WHITE)
+        draw_text(win, f"Star {i+1}", 20, (WIDTH-Lenght_bar-50+Lenght_bar/2, par_size*(i+1)+160), WHITE)
 
-        x = crant_bar(win, mouse_pos, click, WIDTH-250, par_size*(i+1)+180, 200, stars[i].position[0]/Pos_scale+OFFSET, Lenght_bar, 12, WHITE, TRON, key = f"star{i}_x")
+        x = crant_bar(win, mouse_pos, click, WIDTH-Lenght_bar-50, par_size*(i+1)+180, 200, stars[i].position[0]/Pos_scale+OFFSET, Lenght_bar, 12, WHITE, TRON, key = f"star{i}_x")
         formatted_x = f"x: {Pos_scale*(x-OFFSET)/1000:.3e}"
-        light_draw_text(win, formatted_x+" km", (WIDTH-380, par_size*(i+1) + 188), WHITE, Font)
+        light_draw_text(win, formatted_x+" km", (WIDTH-Lenght_bar-180, par_size*(i+1) + 188), WHITE, Font)
         
-        y = crant_bar(win, mouse_pos, click, WIDTH-250, par_size*(i+1)+20+180, 200, stars[i].position[1]/Pos_scale+OFFSET, Lenght_bar, 12, WHITE,TRON, key = f"star{i}_y")
+        y = crant_bar(win, mouse_pos, click, WIDTH-Lenght_bar-50, par_size*(i+1)+20+180, 200, stars[i].position[1]/Pos_scale+OFFSET, Lenght_bar, 12, WHITE,TRON, key = f"star{i}_y")
         formatted_y = f"y: {Pos_scale*(y-OFFSET)/1000:.3e}"
-        light_draw_text(win, formatted_y+" km", (WIDTH-380, par_size*(i+1) + 20+ 188), WHITE, Font)
+        light_draw_text(win, formatted_y+" km", (WIDTH-Lenght_bar-180, par_size*(i+1) + 20+ 188), WHITE, Font)
         
-        Vx = crant_bar(win, mouse_pos, click, WIDTH-250, par_size*(i+1)+40+180, 200, stars[i].velocity[0]/Vel_scale+OFFSET, Lenght_bar, 12, WHITE, TRON, key = f"star{i}_Vx")
+        Vx = crant_bar(win, mouse_pos, click, WIDTH-Lenght_bar-50, par_size*(i+1)+40+180, 200, stars[i].velocity[0]/Vel_scale+OFFSET, Lenght_bar, 12, WHITE, TRON, key = f"star{i}_Vx")
         formatted_Vx = f"Vx: {Vel_scale*(Vx-OFFSET)/1000:.3e}"
-        light_draw_text(win, formatted_Vx + " km/s", (WIDTH-380, par_size*(i+1) + 40+ 188), WHITE, Font)
+        light_draw_text(win, formatted_Vx + " km/s", (WIDTH-Lenght_bar-180, par_size*(i+1) + 40+ 188), WHITE, Font)
 
-        Vy = crant_bar(win, mouse_pos, click, WIDTH-250, par_size*(i+1)+60+180, 200, stars[i].velocity[1]/Vel_scale+OFFSET, Lenght_bar, 12, WHITE,TRON, key = f"star{i}_Vy")
-        formatted_Vy = f"Vx: {Vel_scale*(Vy-OFFSET)/1000:.3e}"
-        light_draw_text(win, formatted_Vy + " km/s", (WIDTH-380, par_size*(i+1)+ 60 + 188), WHITE, Font)
+        Vy = crant_bar(win, mouse_pos, click, WIDTH-Lenght_bar-50, par_size*(i+1)+60+180, 200, stars[i].velocity[1]/Vel_scale+OFFSET, Lenght_bar, 12, WHITE,TRON, key = f"star{i}_Vy")
+        formatted_Vy = f"Vy: {Vel_scale*(Vy-OFFSET)/1000:.3e}"
+        light_draw_text(win, formatted_Vy + " km/s", (WIDTH-Lenght_bar-180, par_size*(i+1)+ 60 + 188), WHITE, Font)
         
-        mass = crant_bar(win, mouse_pos, click, WIDTH-250, par_size*(i+1)+80+180, 200, stars[i].mass/Mass_scale, Lenght_bar, 12, WHITE, TRON, key = f"star{i}_mass")
-        formatted_mass = f"Mass: {mass*Mass_scale/1e30:.3e}"
-        light_draw_text(win, formatted_mass + " kg", (WIDTH-380, par_size*(i+1)+80+188), WHITE, Font)
+        mass = crant_bar(win, mouse_pos, click, WIDTH-Lenght_bar-50, par_size*(i+1)+80+180, 200, stars[i].mass/Mass_scale, Lenght_bar, 12, WHITE, TRON, key = f"star{i}_mass")
+        formatted_mass = f"Mass: {mass*Mass_scale:.3e}"
+        light_draw_text(win, formatted_mass + " kg", (WIDTH-Lenght_bar-180, par_size*(i+1)+80+188), WHITE, Font)
 
         stars[i].position = np.array([Pos_scale*(x-OFFSET), Pos_scale*(y-OFFSET)], dtype=np.float64)
         stars[i].velocity = np.array([Vel_scale*(Vx-OFFSET), Vel_scale*(Vy-OFFSET)], dtype=np.float64)
         stars[i].mass = mass*Mass_scale
-    
+        #if abs(Vel_scale*(Vy-OFFSET)/1000) or abs(Vel_scale*(Vx-OFFSET)/1000) > 300000000:
+        #    draw_text(win, "STUPID BOY, not more that 299 458 792 km/s !!!", 35, (WIDTH/2, HEIGHT/2), RED)
+
+    ### --------------  VISUALISATION  ----------------
+
+    VW = WIDTH/2.3
+    VH = HEIGHT/1.87
+    Scale_W = VW/POSITION
+    Scale_H = VH/POSITION
+    x_center = VW /2 + 58
+    y_center = VH /2 + HEIGHT/5+44
+    visu_back = pygame.Rect(58, HEIGHT/5+40, VW, VH)
+    pygame.draw.rect(win, TRON, visu_back, border_radius=10)
+
+    visu_dark = pygame.Rect(62, HEIGHT/5+44, VW-8, VH-8)
+    pygame.draw.rect(win, BLACK, visu_dark, border_radius=10)
+
+    for star in stars:
+        pygame.draw.circle(win, WHITE, (x_center + Scale_W*star.position[0], y_center + Scale_H*star.position[1]), 5)
+
+
+
+
+
+
+
+
+
+
+
     previous = stars_number
