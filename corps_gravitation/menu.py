@@ -87,7 +87,7 @@ def menu(win, WIDTH, HEIGHT):
             WB, HB = 515,115
             draw_text(win, "Start Simulation", 39, (250, HEIGHT-100), TRON)        
             if click[0]:
-                draw_text(win, "Start Simulation", 20, (250, HEIGHT-100), TRON)
+                draw_text(win, "Start Simulation", 20, (250, HEIGHT-100), WHITE)
                 draw_text(win, "Start Simulation", 29, (250, HEIGHT-100), TRON)
                 WB, HB = 485,85
         else:
@@ -107,15 +107,9 @@ def menu(win, WIDTH, HEIGHT):
         
         chargement(win, 489, HEIGHT-97 , teta, fact)
 
-        stars_number = crant_bar(win, mouse_pos, click, WIDTH- 250, 250, 3,1, 200, 20, WHITE)
-        configure_stars(win,mouse_pos, click, stars_number, WIDTH, HEIGHT)
+        
+        configure_stars(win,mouse_pos, click, WIDTH, HEIGHT)
 
         
         pygame.display.update()
-
-
-
-
-
-
 
