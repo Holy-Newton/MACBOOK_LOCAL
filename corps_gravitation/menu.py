@@ -107,8 +107,8 @@ def menu(win, WIDTH, HEIGHT):
         
         chargement(win, 489, HEIGHT-97 , teta, fact)
 
-        stars_number = crant_bar(win, mouse_pos, click, WIDTH- 250, 250, 3,1, 200, 20, WHITE, key = f"star_number")
-        configure_stars(win,mouse_pos, click, stars_number, WIDTH, HEIGHT)
+        
+        configure_stars(win,mouse_pos, click, WIDTH, HEIGHT)
 
         
         pygame.display.update()

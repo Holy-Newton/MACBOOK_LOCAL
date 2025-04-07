@@ -22,13 +22,6 @@ init_data = [
 
 
 
-
-
-
-
-'''
-
-
 def crant_bar( win, mouse_pos, click, x, y, choices, default,length, width, color, key):  ## Selection bar
     if not hasattr(crant_bar, "val"):
         crant_bar.val = {}
@@ -37,8 +30,10 @@ def crant_bar( win, mouse_pos, click, x, y, choices, default,length, width, colo
         crant_bar.val[key] = default*length/choices
         print(1)
     else:
-        default = crant_bar.val[key] * choices / length
+        default = crant_bar.val[key] * choices/length
         print(2)
+
+
     init = pygame.Rect(x, y, length, width)
     pygame.draw.rect(win, color, init, border_radius=2)
 
@@ -48,16 +43,10 @@ def crant_bar( win, mouse_pos, click, x, y, choices, default,length, width, colo
     if init.collidepoint(mouse_pos):
         if click[0]==1:
             for i in range(choices):
-                if x+(i+1)*(length/choices)> mouse_pos[0] > x+i*(length/choices):
+                if (x+(i+1)*(length/choices)) >= mouse_pos[0] >= (x+i*(length/choices)):
                     crant_bar.val[key] = (i+1)*(length/choices)
-    return int(crant_bar.val[key]/length*choices)
 
-
-
-
-
-
-
+    return crant_bar.val[key]/length*choices
 
 
 
@@ -69,9 +58,6 @@ def draw_text(win, text, font_size, position, color):
     win.blit(text_surface, text_rect)
 
 
-
-
-
 class Star:
     def __init__(self, position, velocity, mass, color):
         self.position = position
@@ -79,16 +65,14 @@ class Star:
         self.mass = mass
         self.color = color
 
-    
-
 stars = []
 previous = 0
-
-
-
-
 ### creation of the menu parameters
-def configure_stars(win, mouse_pos, click, stars_number, WIDTH, HEIGHT):
+def configure_stars(win, mouse_pos, click, WIDTH, HEIGHT):
+    
+
+    stars_number = int( crant_bar(win, mouse_pos, click, WIDTH- 250, 250, 3,1, 200, 20, WHITE, key = f"star_number") + 1)
+
     global previous
     global stars
 
@@ -96,15 +80,19 @@ def configure_stars(win, mouse_pos, click, stars_number, WIDTH, HEIGHT):
     Pos_scale = 1e9 / 100
     OFFSET = 100
 
+    
+
     if previous != stars_number:
         stars = []
-        for data in init_data[:stars_number+1]:
+        for data in init_data[:stars_number]:
             star = Star(
                 position=data["position"],
                 velocity=data["velocity"],
                 mass=data["mass"],
                 color=data["color"]
             )
+            stars.append(star)
+            '''
             index = len(stars) - 1
             key_x = f"star{index}_x"
             key_y = f"star{index}_y"
@@ -113,11 +101,11 @@ def configure_stars(win, mouse_pos, click, stars_number, WIDTH, HEIGHT):
                 crant_bar.val[key_x] = star.position[0]
             if key_y not in crant_bar.val:
                 crant_bar.val[key_y] = star.position[1]
-        
+            '''
 
 
-    for i in range(stars_number+1):
-        
+    for star in stars:
+        i = stars.index(star)
         x = crant_bar(win, mouse_pos, click, WIDTH-250, par_size*(i+1)+160, 200, stars[i].position[0]/Pos_scale+OFFSET, 200, 12, WHITE,key = f"star{i}_x")
         y = crant_bar(win, mouse_pos, click, WIDTH-250, par_size*(i+1)+20+160, 200, stars[i].position[1]/Pos_scale+OFFSET, 200, 12, WHITE,key = f"star{i}_y")
         #print(x,y)
@@ -125,4 +113,3 @@ def configure_stars(win, mouse_pos, click, stars_number, WIDTH, HEIGHT):
         print(stars[i].position[0])
     
     previous = stars_number
-'''
