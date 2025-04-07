@@ -1,7 +1,7 @@
 import numpy as np
 import math as m
 import pygame
-
+from configure_stars import configure_stars, crant_bar
 # Standard RGB color definitions
 BLACK = (0, 0, 0)       # Noir
 WHITE = (255, 255, 255) # Blanc
@@ -11,31 +11,6 @@ BLUE = (150, 150, 255)      # Bleu
 YELLOW = (255, 255, 0)  # Jaune
 CYAN = (0, 255, 255)    # Cyan
 TRON = (167, 208, 255)
-
-
-def crant_bar( win, mouse_pos, click, x, y, choices, default,length, width, color):  ## Selection bar
-    if not hasattr(crant_bar, "val"):
-        crant_bar.val = default*length/(choices)
-    init = pygame.Rect(x, y, length, width)
-    pygame.draw.rect(win, color, init, border_radius=2)
-
-    init_black = pygame.Rect(x+crant_bar.val+4, y+4, length-crant_bar.val-8, width-8)
-    pygame.draw.rect(win, BLACK, init_black, border_radius=4)
-
-    if init.collidepoint(mouse_pos):
-        if click[0]==1:
-            for i in range(choices):
-                if mouse_pos[0]> x+i*(length/choices) and mouse_pos[0]< x+(i+1)*(length/choices):
-                    crant_bar.val = (i+1)*(length/choices)
-    return int(crant_bar.val/length*choices)
-
-
-
-
-
-
-
-
 
 
 def draw_text(win, text, font_size, position, color):
@@ -70,7 +45,6 @@ def rgb(n):
     return (r, g, b)    
 
 def menu(win, WIDTH, HEIGHT):
-    
     clock = pygame.time.Clock()
     run = True
     WB, HB = 500,100
@@ -133,8 +107,15 @@ def menu(win, WIDTH, HEIGHT):
         
         chargement(win, 489, HEIGHT-97 , teta, fact)
 
-        print(crant_bar(win, mouse_pos, click, WIDTH- 250, 250, 3,1, 200, 20, WHITE))
-
+        stars_number = crant_bar(win, mouse_pos, click, WIDTH- 250, 250, 3,1, 200, 20, WHITE)
+        configure_stars(win,mouse_pos, click, stars_number, WIDTH, HEIGHT)
 
         
         pygame.display.update()
+
+
+
+
+
+
+
