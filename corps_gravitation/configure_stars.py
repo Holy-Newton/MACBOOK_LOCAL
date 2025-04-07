@@ -11,14 +11,15 @@ BLUE = (150, 150, 255)      # Bleu
 YELLOW = (255, 255, 0)  # Jaune
 CYAN = (0, 255, 255)    # Cyan
 TRON = (167, 208, 255)
-
+epsilon = 2e6
+G = 6.67430e-9
 
 
 init_data = [
     {"position":np.array([-1.496e8, 0], dtype=np.float64), "velocity":np.array([0, -297800], dtype=np.float64), "mass":1.989e28, "color":WHITE},
     {"position":np.array([1.496e8, 0], dtype=np.float64), "velocity":np.array([0, 297800], dtype=np.float64), "mass":1.989e28, "color":WHITE},
     {"position":np.array([1e8, -2.5e8], dtype=np.float64), "velocity":np.array([-47000, -1000], dtype=np.float64), "mass":1.989e26, "color":WHITE},
-    {"position":np.array([-1.496e8, 0], dtype=np.float64), "velocity":np.array([47000, 1000], dtype=np.float64), "mass":1.989e26, "color":WHITE},
+    {"position":np.array([-1e8, 2.5e8], dtype=np.float64), "velocity":np.array([47000, 1000], dtype=np.float64), "mass":1.989e26, "color":WHITE},
 
 ]
 
@@ -29,11 +30,10 @@ def crant_bar( win, mouse_pos, click, x, y, choices, default,length, width, colo
 
     if key not in crant_bar.val:
         crant_bar.val[key] = default*length/choices
-        print(1)
+        
     else:
         default = crant_bar.val[key] * choices/length
-        print(2)
-
+        
     init_bg = pygame.Rect(x-2, y-2, length+4, width+4)
     pygame.draw.rect(win, color2, init_bg, border_radius=2)
 
@@ -66,11 +66,32 @@ def light_draw_text(win, text, position, color, font):
 
 
 class Star:
-    def __init__(self, position, velocity, mass, color):
-        self.position = position
-        self.velocity = velocity
+    def __init__(self, mass, color, position, velocity):
         self.mass = mass
         self.color = color
+        self.position = np.array(position)
+        self.velocity = np.array(velocity)
+
+    def draw(self, win, WIDTH, HEIGHT):
+        x = self.position[0] * 1e-6 + WIDTH / 2
+        y = self.position[1] * 1e-6 + HEIGHT / 2
+        pygame.draw.circle(win, self.color, (int(x), int(y)), 8)
+
+    def acceleration(self, other, G, epsilon):
+        r = np.linalg.norm(other.position - self.position)
+        a = G * other.mass * (other.position - self.position) / ((r)**2 + epsilon**2)**(3/2)
+        return a
+
+    def new_position(self, dt, stars, G, epsilon):
+        OTHERS = stars.copy()
+        OTHERS.remove(self)
+        a_tot = np.array([0.0, 0.0], dtype=np.float64)
+        for other in OTHERS:
+            a_tot += self.acceleration(other, G, epsilon)
+        self.velocity += a_tot * dt
+        self.position += self.velocity * dt
+
+
 stars = []
 previous = 0
 
@@ -151,17 +172,14 @@ def configure_stars(win, mouse_pos, click, WIDTH, HEIGHT):
     visu_dark = pygame.Rect(62, HEIGHT/5+44, VW-8, VH-8)
     pygame.draw.rect(win, BLACK, visu_dark, border_radius=10)
 
+    pygame.draw.line(win, WHITE, (x_center-5, y_center), (x_center+5, y_center), 1)
+    pygame.draw.line(win, WHITE, (x_center, y_center-5), (x_center, y_center+5), 1)
+
     for star in stars:
-        pygame.draw.circle(win, WHITE, (x_center + Scale_W*star.position[0], y_center + Scale_H*star.position[1]), 5)
-
-
-
-
-
-
-
-
-
+        Diameter = int(star.mass/4e28 + 5)
+        pygame.draw.line(win, TRON, (x_center + Scale_W*star.position[0], y_center + Scale_H*star.position[1]), (x_center + Scale_W*star.position[0] + star.velocity[0]/1e4, y_center + Scale_H*star.position[1]+star.velocity[1]/1e4), 2)
+        pygame.draw.circle(win, WHITE, (x_center + Scale_W*star.position[0], y_center + Scale_H*star.position[1]), Diameter)
 
 
     previous = stars_number
+    return stars

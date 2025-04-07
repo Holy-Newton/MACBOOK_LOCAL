@@ -1,7 +1,7 @@
 import numpy as np
 import math as m
 import pygame
-from configure_stars import configure_stars, crant_bar
+from configure_stars import configure_stars
 # Standard RGB color definitions
 BLACK = (0, 0, 0)       # Noir
 WHITE = (255, 255, 255) # Blanc
@@ -50,6 +50,7 @@ def menu(win, WIDTH, HEIGHT):
     WB, HB = 500,100
     teta = 0.1
     fact = 1
+    stars = []
     while run:
         mouse_pos = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
@@ -99,16 +100,19 @@ def menu(win, WIDTH, HEIGHT):
             if event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:  #gauche
                     if start_but.collidepoint(mouse_pos):
+                        return stars
                         run = False
 
             if event.type == pygame.QUIT:
+                
                 run = False
+
                 
         
         chargement(win, 489, HEIGHT-97 , teta, fact)
 
         
-        configure_stars(win,mouse_pos, click, WIDTH, HEIGHT)
+        stars = configure_stars(win,mouse_pos, click, WIDTH, HEIGHT)
 
         
         pygame.display.update()
