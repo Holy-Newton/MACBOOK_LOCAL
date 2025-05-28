@@ -2,7 +2,7 @@ import numpy as np
 import math as m
 import pygame
 from menu import menu
-from configure_stars import Star
+#from configure_stars import Star
 
 pygame.init()
 WIDTH, HEIGHT = 1200, 900
