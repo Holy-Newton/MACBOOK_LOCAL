@@ -69,28 +69,32 @@ class Star:
     def __init__(self, mass, color, position, velocity):
         self.mass = mass
         self.color = color
-        self.position = np.array(position)
-        self.velocity = np.array(velocity)
+        self.position = np.array(position, dtype=np.float64)
+        self.velocity = np.array(velocity, dtype=np.float64)
+        self.acceleration = np.zeros(2, dtype=np.float64)
 
     def draw(self, win, WIDTH, HEIGHT):
-        x = self.position[0] * 1e-6 + WIDTH / 2
-        y = self.position[1] * 1e-6 + HEIGHT / 2
+        x = self.position[0] *1e-6 +WIDTH /2
+        y = self.position[1] *1e-6 +HEIGHT /2
         pygame.draw.circle(win, self.color, (int(x), int(y)), 8)
 
-    def acceleration(self, other, G, epsilon):
-        r = np.linalg.norm(other.position - self.position)
-        a = G * other.mass * (other.position - self.position) / ((r)**2 + epsilon**2)**(3/2)
-        return a
+    def acceleration_calculation(self,other, G, epsilon, stars):
+        acc = np.zeros(2, dtype=np.float64)
+        for other in stars:
+            if other is self:
+                continue
+            r_vec = other.position -self.position
+            dist_sqr = np.dot(r_vec,r_vec) +epsilon**2
+            dist = np.sqrt(dist_sqr)
+            acc += G *other.mass * r_vec /(dist_sqr * dist)  # a= GM r /r^3 = GM r /r^3
+        return acc
+
 
     def new_position(self, dt, stars, G, epsilon):
-        OTHERS = stars.copy()
-        OTHERS.remove(self)
-        a_tot = np.array([0.0, 0.0], dtype=np.float64)
-        for other in OTHERS:
-            a_tot += self.acceleration(other, G, epsilon)
-        self.velocity += a_tot * dt
-        self.position += self.velocity * dt
-
+        self.position += self.velocity * dt + 0.5 * self.acceleration * dt**2
+        new_acceleration = self.acceleration_calculation(stars, G, epsilon, stars)
+        self.velocity += 0.5 * (self.acceleration + new_acceleration) * dt
+        self.acceleration = new_acceleration
 
 stars = []
 previous = 0
